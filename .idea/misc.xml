@@ -5,9 +5,12 @@
       <map>
         <entry key="../../../../../../layout/custom_preview.xml" value="0.33" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.1655" />
+        <entry key="app/src/main/res/layout/activity_bill.xml" value="0.30867892261650276" />
+        <entry key="app/src/main/res/layout/activity_control.xml" value="0.30867892261650276" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/sample_app_view.xml" value="0.33" />
         <entry key="app/src/main/res/layout/sample_my_view.xml" value="0.34148550724637683" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.219" />
       </map>
     </option>
   </component>
