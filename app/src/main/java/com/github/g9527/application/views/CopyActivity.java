@@ -6,12 +6,12 @@ import android.os.Bundle;
 
 import com.github.g9527.application.R;
 
-public class BillActivity extends AppCompatActivity {
+public class CopyActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bill);
-        setTitle("记账本");
+        setContentView(R.layout.activity_copy);
+        setTitle("剪切板");
     }
 }
