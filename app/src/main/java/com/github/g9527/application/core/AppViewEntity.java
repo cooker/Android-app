@@ -3,9 +3,9 @@ package com.github.g9527.application.core;
 public class AppViewEntity {
     private long id;
     private int imgId;
-    private String label;
+    private int label;
 
-    public AppViewEntity(long id, int imgId, String label) {
+    public AppViewEntity(long id, int imgId, int label) {
         this.id = id;
         this.imgId = imgId;
         this.label = label;
@@ -27,11 +27,11 @@ public class AppViewEntity {
         this.imgId = imgId;
     }
 
-    public String getLabel() {
+    public int getLabel() {
         return label;
     }
 
-    public void setLabel(String label) {
+    public void setLabel(int label) {
         this.label = label;
     }
 }

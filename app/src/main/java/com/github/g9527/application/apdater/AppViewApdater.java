@@ -41,11 +41,25 @@ public class AppViewApdater extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View view = LayoutInflater.from(context).inflate(R.layout.app_view, parent, false);
-        ImageView imageView = view.findViewById(R.id.app_view_img);
-        TextView textView = view.findViewById(R.id.app_view_label);
+        ViewHolder holder = null;
+        if (convertView == null) {
+            convertView = LayoutInflater.from(context).inflate(R.layout.app_view, parent, false);
+            holder = new ViewHolder();
+            holder.imageView = convertView.findViewById(R.id.app_view_img);
+            holder.textView = convertView.findViewById(R.id.app_view_label);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
+        ImageView imageView = holder.imageView;
+        TextView textView = holder.textView;
         imageView.setImageResource(datas.get(position).getImgId());
         textView.setText(datas.get(position).getLabel());
-        return view;
+        return convertView;
+    }
+
+    static class ViewHolder {
+        ImageView imageView;
+        TextView textView;
     }
 }

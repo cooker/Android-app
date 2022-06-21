@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">つく</string>
+    <string name="app_jzb">记账本</string>
+    <string name="app_jqb">剪切板</string>
+    <string name="app_ykq">遥控器</string>
 </resources>

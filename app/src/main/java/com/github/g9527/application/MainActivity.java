@@ -32,9 +32,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_main);
         GridView gridView = findViewById(R.id.main_layout);
         items = new ArrayList<>();
-        items.add(new AppViewEntity(1L, R.mipmap.baixiangguo, "遥控器"));
-        items.add(new AppViewEntity(2L, R.mipmap.juzi, "记账本"));
-        items.add(new AppViewEntity(3L, R.mipmap.shanzhu, "剪切板"));
+        items.add(new AppViewEntity(1L, R.mipmap.baixiangguo, R.string.app_ykq));
+        items.add(new AppViewEntity(2L, R.mipmap.juzi, R.string.app_jzb));
+        items.add(new AppViewEntity(3L, R.mipmap.shanzhu, R.string.app_jqb));
         AppViewApdater apdater = new AppViewApdater(this, items);
         gridView.setAdapter(apdater);
         gridView.setOnItemClickListener(this);
