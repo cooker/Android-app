@@ -4,15 +4,11 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../../../layout/custom_preview.xml" value="0.33" />
-        <entry key="..\:/Android/Android-app/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
-        <entry key="..\:/Android/Android-app/app/src/main/res/layout/activity_bill.xml" value="0.1661600810536981" />
-        <entry key="..\:/Android/Android-app/app/src/main/res/layout/activity_control.xml" value="0.1661600810536981" />
-        <entry key="..\:/Android/Android-app/app/src/main/res/layout/activity_copy.xml" value="0.1656534954407295" />
-        <entry key="..\:/Android/Android-app/app/src/main/res/layout/activity_main.xml" value="0.1661600810536981" />
-        <entry key="..\:/Android/Android-app/app/src/main/res/layout/app_view.xml" value="0.1661600810536981" />
+        <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.219" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.1655" />
         <entry key="app/src/main/res/layout/activity_bill.xml" value="0.30867892261650276" />
         <entry key="app/src/main/res/layout/activity_control.xml" value="0.30867892261650276" />
+        <entry key="app/src/main/res/layout/activity_copy.xml" value="0.30867892261650276" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/sample_app_view.xml" value="0.33" />
         <entry key="app/src/main/res/layout/sample_my_view.xml" value="0.34148550724637683" />

@@ -7,6 +7,16 @@
     android:orientation="vertical"
     tools:context=".views.CopyActivity">
 
+    <EditText
+        android:id="@+id/copy_edit"
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:inputType="text"
+        android:singleLine="true"
+        android:hint="192.168.0.103:8096"
+        android:gravity="center"
+        />
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="match_parent"
