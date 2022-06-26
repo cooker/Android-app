@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     tools:context=".views.CopyActivity">
 
     <EditText
@@ -13,11 +15,12 @@
         android:layout_height="50sp"
         android:inputType="text"
         android:singleLine="true"
-        android:hint="192.168.0.103:8096"
+        android:hint="10.0.0.15:8086"
         android:gravity="center"
         />
 
     <Button
+        android:id="@+id/copy_btn_copy"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -28,6 +31,7 @@
         />
 
     <Button
+        android:id="@+id/copy_btn_cut"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
