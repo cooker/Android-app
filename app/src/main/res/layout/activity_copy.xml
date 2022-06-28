@@ -25,7 +25,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center"
-        android:background="@color/teal_200"
+        android:background="@drawable/copy_btn_background"
         android:textSize="40sp"
         android:text="复制"
         />
@@ -36,7 +36,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center"
-        android:background="@color/light_blue_400"
+        android:background="@drawable/copy_btn_background"
         android:textSize="40sp"
         android:text="黏贴"
         />

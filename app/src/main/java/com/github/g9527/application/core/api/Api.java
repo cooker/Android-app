@@ -74,4 +74,25 @@ public class Api {
             }
         });
     }
+
+    public void get(ApiCallback apiCallback) {
+        Request.Builder builder = new Request.Builder()
+                .url(requestUrl)
+                .headers(headers)
+                .addHeader("contentType", "application/json;charset=UTF-8");
+
+        Call call = okHttpUtils.newCall(builder.build());
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.e(TAG, e.getMessage());
+                apiCallback.onFailure(e);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                apiCallback.onSuccess(response);
+            }
+        });
+    }
 }

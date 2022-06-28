@@ -65,10 +65,36 @@ public class CopyActivity extends AppCompatActivity implements TextView.OnEditor
             super.handleMessage(msg);
             switch (msg.what) {
                 case 1:
-                    String json = (String) msg.getData().getString("body");
-                    doCopyHandler(json);
+                    String json = msg.getData().getString("body");
+                    try {
+                        doCopyHandler(json);
+                    } catch (Exception e) {
+                        Log.e(TAG, "copy 操作失败", e);
+                        Toast.makeText(CopyActivity.this, "操作失败：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
                     break;
                 case 2:
+                    String text = msg.getData().getString("text");
+                    TextData textData = new TextData(text);
+                    String host = editText.getText().toString();
+                    Map<String, String> hmap = new HashMap<>();
+                    hmap.put(Constants.X_API_VERSION, "1");
+                    Api api = Api.config("http://" + host + "/", null, hmap, textData);
+                    api.post(new ApiCallback() {
+                        @Override
+                        public void onSuccess(Response response) {
+                            Looper.prepare();
+                            Toast.makeText(CopyActivity.this, "黏贴成功", Toast.LENGTH_SHORT).show();
+                            Looper.loop();
+                        }
+
+                        @Override
+                        public void onFailure(Exception e) {
+                            Looper.prepare();
+                            Toast.makeText(CopyActivity.this, "黏贴失败", Toast.LENGTH_SHORT).show();
+                            Looper.loop();
+                        }
+                    });
                     break;
             }
 
@@ -131,7 +157,7 @@ public class CopyActivity extends AppCompatActivity implements TextView.OnEditor
                         Map<String, String> hmap = new HashMap<>();
                         hmap.put(Constants.X_API_VERSION, "1");
                         Api api = Api.config("http://" + host + "/", null, hmap, null);
-                        api.post(new ApiCallback() {
+                        api.get(new ApiCallback() {
                             @Override
                             public void onSuccess(Response response) {
                                 Message obtain = Message.obtain();
@@ -169,7 +195,22 @@ public class CopyActivity extends AppCompatActivity implements TextView.OnEditor
                 }.start();
                 break;
             case R.id.copy_btn_cut:
+                doCutHandler();
                 break;
+        }
+    }
+
+    private void doCutHandler() {
+        ClipboardManager clipboardManager = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clipData = clipboardManager.getPrimaryClip();
+        if (clipData != null && clipData.getItemCount() > 0) {
+            String text = clipData.getItemAt(0).getText().toString();
+            Message obtain = Message.obtain();
+            obtain.what = 1;
+            Bundle bundle = new Bundle();
+            bundle.putString("text", text);
+            obtain.setData(bundle);
+            handler.sendMessage(obtain);
         }
     }
 
