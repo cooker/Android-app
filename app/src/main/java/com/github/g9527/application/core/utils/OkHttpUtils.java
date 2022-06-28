@@ -15,7 +15,6 @@ import okhttp3.ResponseBody;
 public class OkHttpUtils {
     static OkHttpUtils okHttpUtil;
     private OkHttpClient.Builder builder;
-    private Request.Builder requestBuilder;
     private OkHttpClient okHttpClient;
 
     private OkHttpUtils() {
@@ -23,7 +22,6 @@ public class OkHttpUtils {
         okHttpClient = builder.addInterceptor(new RequestLoggerInterceptor())
                 .addInterceptor(new ResponseLoggerInterceptor())
                 .build();
-        requestBuilder = new Request.Builder();//省的每次都new  request操作,直接builder出来,随后需要什么往里加,build出来即可
     }
 
     public static OkHttpUtils getInstance() {
@@ -37,19 +35,8 @@ public class OkHttpUtils {
         return okHttpUtil;
     }
 
-    public Request.Builder requestBuilder() {
-        return requestBuilder;
-    }
-
     public Call newCall(Request request) {
         return okHttpClient.newCall(request);
-    }
-
-    /**
-     * 接口用于回调数据
-     */
-    public interface ICallback {
-        void invoke(String string);
     }
 
     /**

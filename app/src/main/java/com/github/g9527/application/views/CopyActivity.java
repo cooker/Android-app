@@ -3,12 +3,12 @@ package com.github.g9527.application.views;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.os.StrictMode;
 import android.util.Base64;
@@ -18,14 +18,18 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.g9527.application.R;
 import com.github.g9527.application.core.Constants;
+import com.github.g9527.application.core.api.Api;
+import com.github.g9527.application.core.api.ApiCallback;
 import com.github.g9527.application.core.clipboard.FileData;
 import com.github.g9527.application.core.clipboard.TextData;
+import com.github.g9527.application.core.utils.GsonUtils;
 import com.github.g9527.application.core.utils.OkHttpUtils;
 import com.google.gson.Gson;
 
@@ -37,10 +41,12 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import kotlin.collections.MapsKt;
 import okhttp3.Request;
 import okhttp3.Response;
 
@@ -59,12 +65,8 @@ public class CopyActivity extends AppCompatActivity implements TextView.OnEditor
             super.handleMessage(msg);
             switch (msg.what) {
                 case 1:
-                    Response jsonObject = (Response) msg.obj;
-                    try {
-                        doCopyHandler(jsonObject.body().byteString().string(Charset.defaultCharset()));
-                    } catch (IOException e) {
-                        Log.e(TAG, "数据解析失败", e);
-                    }
+                    String json = (String) msg.getData().getString("body");
+                    doCopyHandler(json);
                     break;
                 case 2:
                     break;
@@ -124,28 +126,45 @@ public class CopyActivity extends AppCompatActivity implements TextView.OnEditor
                 new Thread() {
                     @Override
                     public void run() {
-                        Message obtain = Message.obtain();
+
                         String host = editText.getText().toString();
-                        obtain.what = 1;
+                        Map<String, String> hmap = new HashMap<>();
+                        hmap.put(Constants.X_API_VERSION, "1");
+                        Api api = Api.config("http://" + host + "/", null, hmap, null);
+                        api.post(new ApiCallback() {
+                            @Override
+                            public void onSuccess(Response response) {
+                                Message obtain = Message.obtain();
+                                obtain.what = 1;
+                                Bundle bundle = new Bundle();
+                                String body = null;
+                                try {
+                                    body = response.body().string();
+                                } catch (IOException e) {
+                                    Looper.prepare();
+                                    Toast.makeText(CopyActivity.this, "响应失败：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Looper.loop();
+                                    return;
+                                }
+                                bundle.putString("body", body);
+                                obtain.setData(bundle);
+                                if (200 == response.code() && !StringUtils.isEmpty(body)) {
+                                    handler.sendMessage(obtain);
+                                } else {
+                                    Looper.prepare();
+                                    Toast.makeText(CopyActivity.this, "请求失败：" + response.code(), Toast.LENGTH_SHORT).show();
+                                    Looper.loop();
+                                }
+                            }
 
-                        Request r = OkHttpUtils.getInstance().requestBuilder().url("http://" + host + "/")
-                                .header(Constants.X_API_VERSION, "1")
-                                .build();
-                        Response response = null;
-                        try {
-                            response =  OkHttpUtils.getInstance().newCall(r).execute();
-                        } catch (IOException e) {
-                            Log.e(TAG, "请求异常", e);
-                            return;
-                        }
-                        obtain.obj = response;
-                        String body = response.body().toString();
-                        if (200 == response.code() && !StringUtils.isEmpty(body)) {
+                            @Override
+                            public void onFailure(Exception e) {
+                                Looper.prepare();
+                                Toast.makeText(CopyActivity.this, "请求失败：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                Looper.loop();
 
-                        } else {
-                            return;
-                        }
-                        handler.sendMessage(obtain);
+                            }
+                        });
                     }
                 }.start();
                 break;
@@ -155,15 +174,14 @@ public class CopyActivity extends AppCompatActivity implements TextView.OnEditor
     }
 
     private void doCopyHandler(String jsonObject){
-        Gson gson = new Gson();
-        Map map = gson.fromJson(jsonObject, Map.class);
+        Map map = GsonUtils.toBean(jsonObject, Map.class);
         String type = (String) map.get("type");
         ClipData clipData = null;
         if ("text".equals(type)) {
-            TextData textData = gson.fromJson(jsonObject, TextData.class);
+            TextData textData = GsonUtils.toBean(jsonObject, TextData.class);
             clipData = ClipData.newPlainText(null, textData.getData());
         } else if ("file".equals(type)) {
-            FileData fileData = gson.fromJson(jsonObject, FileData.class);
+            FileData fileData = GsonUtils.toBean(jsonObject, FileData.class);
             File cacheDir = getCacheDir();
             List<File> fileList = new ArrayList<>();
             for (FileData.DataDTO it : fileData.getData()) {
@@ -185,5 +203,6 @@ public class CopyActivity extends AppCompatActivity implements TextView.OnEditor
 
         ClipboardManager clipboard = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
         clipboard.setPrimaryClip(clipData);
+        Toast.makeText(CopyActivity.this, "操作成功", Toast.LENGTH_SHORT).show();
     }
 }
