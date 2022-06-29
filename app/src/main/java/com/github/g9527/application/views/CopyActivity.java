@@ -206,7 +206,7 @@ public class CopyActivity extends AppCompatActivity implements TextView.OnEditor
         if (clipData != null && clipData.getItemCount() > 0) {
             String text = clipData.getItemAt(0).getText().toString();
             Message obtain = Message.obtain();
-            obtain.what = 1;
+            obtain.what = 2;
             Bundle bundle = new Bundle();
             bundle.putString("text", text);
             obtain.setData(bundle);
