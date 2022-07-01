@@ -5,12 +5,10 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.os.StrictMode;
 import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -30,24 +28,19 @@ import com.github.g9527.application.core.api.ApiCallback;
 import com.github.g9527.application.core.clipboard.FileData;
 import com.github.g9527.application.core.clipboard.TextData;
 import com.github.g9527.application.core.utils.GsonUtils;
-import com.github.g9527.application.core.utils.OkHttpUtils;
-import com.google.gson.Gson;
+import com.github.g9527.application.core.utils.PowerHelper;
 
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Method;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import kotlin.collections.MapsKt;
-import okhttp3.Request;
 import okhttp3.Response;
 
 /**
@@ -110,21 +103,14 @@ public class CopyActivity extends AppCompatActivity implements TextView.OnEditor
         editText.setOnEditorActionListener(this);
         findViewById(R.id.copy_btn_copy).setOnClickListener(this);
         findViewById(R.id.copy_btn_cut).setOnClickListener(this);
-        if(Build.VERSION.SDK_INT>=24){
-            try{
-                Method m = StrictMode.class.getMethod("disableDeathOnFileUriExposure");
-                m.invoke(null);
-            }catch(Exception e){
-                e.printStackTrace();
-            }
-        }
+        PowerHelper.filePower();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         conf = getSharedPreferences("copy", Context.MODE_PRIVATE);
-        String serverHost = conf.getString("serverHost", null);
+        String serverHost = conf.getString(Constants.SERVER_HOST, null);
         editText.setText(serverHost);
     }
 
@@ -136,7 +122,7 @@ public class CopyActivity extends AppCompatActivity implements TextView.OnEditor
                 if (StringUtils.isEmpty(v.getText().toString())) {
                     v.setText(v.getHint());
                 }
-                edit.putString("serverHost", v.getText().toString());
+                edit.putString(Constants.SERVER_HOST, v.getText().toString());
                 edit.commit();
                 editText.clearFocus();
                 return true;

@@ -11,8 +11,11 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import okio.Buffer;
 
 public class OkHttpUtils {
+    public static final String TAG = OkHttpUtils.class.getSimpleName();
+
     static OkHttpUtils okHttpUtil;
     private OkHttpClient.Builder builder;
     private OkHttpClient okHttpClient;
@@ -48,10 +51,16 @@ public class OkHttpUtils {
         public Response intercept(Chain chain) throws IOException {
             Request request = chain.request();
 
-            Log.e(this.getClass().getSimpleName(), "url    =  : " + request.url());
-            Log.e(this.getClass().getSimpleName(), "method =  : " + request.method());
-            Log.e(this.getClass().getSimpleName(), "headers=  : " + request.headers());
-            Log.e(this.getClass().getSimpleName(), "body   =  : " + request.body());
+            Log.i(TAG, "url    =  : " + request.url());
+            Log.i(TAG, "method =  : " + request.method());
+            Log.i(TAG, "headers=  : " + request.headers());
+            if (request.body() != null) {
+                if (request.body().contentType() != null) {
+                    Buffer buffer = new Buffer();
+                    request.body().writeTo(buffer);
+                    Log.i(TAG, "body   =  : " + buffer.readUtf8());
+                }
+            }
 
             return chain.proceed(request);
         }
@@ -65,15 +74,15 @@ public class OkHttpUtils {
         public Response intercept(Chain chain) throws IOException {
             Response response = chain.proceed(chain.request());
 
-            Log.e(this.getClass().getSimpleName(), "code    =  : " + response.code());
-            Log.e(this.getClass().getSimpleName(), "message =  : " + response.message());
-            Log.e(this.getClass().getSimpleName(), "protocol=  : " + response.protocol());
+            Log.i(TAG, "code    =  : " + response.code());
+            Log.i(TAG, "message =  : " + response.message());
+            Log.i(TAG, "protocol=  : " + response.protocol());
 
             if (response.body() != null && response.body().contentType() != null) {
                 MediaType mediaType = response.body().contentType();
                 String string = response.body().string();
-                Log.e(this.getClass().getSimpleName(), "mediaType=  :  " + mediaType.toString());
-                Log.e(this.getClass().getSimpleName(), "string   =  : " + string);
+                Log.i(TAG, "mediaType=  :  " + mediaType.toString());
+                Log.i(TAG, "string   =  : " + string);
                 ResponseBody responseBody = ResponseBody.create(mediaType, string);
                 return response.newBuilder().body(responseBody).build();
             } else {
